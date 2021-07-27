@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WiFi controlled LED</title>
+    <script src="jquery.js"></script>
+
+</head>
+<body>
+    <h2> <i> WiFi Controlled LED using Arduino and ESP8266 </i> </h2>
+    <h4> <i> Enter the IP address of ESP8266 </i> </h4>
+    <div style="margin: 0; width:400px; height:30px;">
+        <FORM NAME="form" ACTION="" METHOD="GET">
+            ESP8266 IP Address:
+            <INPUT TYPE="text" NAME="inputbox" VALUE="" />
+        </FORM>
+    </div>
+    <h3> Click to toggle LED! </h3>
+    <input type="button" NAME="butled1" value="Turn ON Sector 1" />
+    <input type="button" NAME="butled2" value="Turn ON Sector 2" />
+    <input type="button" NAME="butled3" value="Turn ON Sector 3" />
+    <h4> Click to Play DancingQueen</h4>
+    <input type="button" name="Buzzer" value="Play Melody" />
+
+
+</body>
+<script>
+$.ajaxSetup({timeout:1000});
+btnled1 = document.querySelector('input[name="butled1"]');
+btnled2 = document.querySelector('input[name="butled2"]');
+btnled3 = document.querySelector('input[name="butled3"]');
+btn1 = document.querySelector('input[name="Buzzer"]');
+
+btnled1.addEventListener('click', led1);
+btnled2.addEventListener('click', led2);
+btnled3.addEventListener('click', led3);
+btn1.addEventListener('click', buzz);
+val1 = 'OFF';
+val2 = 'OFF';
+val3 = 'OFF';
+val_buzzer = 'OFF';
+
+function led1()
+{
+	if (btnled1.value === 'Turn OFF Sector 1')
+	{
+	btnled1.value = 'Turn ON Sector 1';
+	val1 = 'OFF';
+	}
+	else
+	{
+    	btnled1.value = 'Turn OFF Sector 1';
+	val1 = 'ON';	
+	}
+	TextVar = form.inputbox.value;
+	ArduinoVar = "http://" + TextVar + ":80/";
+	$.get(ArduinoVar, { led1: val1, led2: val2, led3: val3, buzzer: val_buzzer });
+	{Connection: close};
+}
+function led2() {
+    if (btnled2.value === 'Turn OFF Sector 2') {
+        btnled2.value = 'Turn ON Sector 2';
+        val2 = 'OFF';
+        
+    }
+    else {
+        btnled2.value = 'Turn OFF Sector 2';
+        val2 = 'ON';
+        
+    }
+    TextVar = form.inputbox.value;
+    ArduinoVar = "http://" + TextVar + ":80/";
+    $.get(ArduinoVar, { led1: val1, led2: val2, led3: val3, buzzer: val_buzzer })
+    { Connection: close };
+}
+
+function led3() {
+    if (btnled3.value === 'Turn OFF Sector 3') {
+        btnled3.value = 'Turn ON Sector 3';
+        val3 = 'OFF';  
+    }
+    else {
+        btnled3.value = 'Turn OFF Sector 3';
+        val3 = 'ON';
+       
+    }
+    TextVar = form.inputbox.value;
+    ArduinoVar = "http://" + TextVar + ":80/";
+    $.get(ArduinoVar, { led1: val1, led2: val2, led3: val3, buzzer: val_buzzer })
+    { Connection: close };
+}
+function buzz() {
+    changeValue();
+    TextVar = form.inputbox.value;
+    ArduinoVar = "http://" + TextVar + ":80/";
+    $.get(ArduinoVar, { led1: val1, led2: val2, led3: val3, buzzer: val_buzzer });
+    { Connection: close }
+    sleep(1000).then(() =>{
+        val_buzzer = 'OFF';
+        $.get(ArduinoVar, { led1: val1, led2: val2, led3: val3, buzzer: val_buzzer });
+        { Connection: close }});
+    sleep(28000).then(() => {
+        btn1.value = 'Play Melody';
+
+        if (val1 == 'OFF') {
+            btnled1.value = 'Turn ON Sector 1';
+        }
+        else {
+            btnled1.value = 'Turn OFF Sector 1';
+        }
+        if (val2 == 'OFF') {
+            btnled2.value = 'Turn ON Sector 2';
+        }
+        else {
+            btnled2.value = 'Turn OFF Sector 2';
+        }
+        if (val3 == 'OFF') {
+            btnled1.value = 'Turn ON Sector 3';
+        }
+        else {
+            btnled1.value = 'Turn OFF Sector 3';
+        }
+    });
+}
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function changeValue() {
+    btn1.value = 'Playing';
+    btnled1.value = 'Please wait';
+    btnled2.value = 'Please wait';
+    btnled3.value = 'Please wait';
+   
+    val_buzzer = 'ON';
+}
+</script>
+</html>
